@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Add icon library -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/js/bootstrap-dialog.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Teachers Evaluator</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="/home">Home</a></li>
+            <li><a href="/faculties">Faculties</a></li>
+            <li ><a href="/departments">Departments</a></li>
+            <li><a href="#">Teachers</a></li>
+            <li><a href="#">Users</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="row">
+    <div class="col-md-6 offset-md-3" style="margin-top: 20px ;margin-left: 25%">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                    <div class="form-group">
+                        <div>
+                            <div th:if="${#httpServletRequest.remoteUser}">
+                                <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+                                <form th:action="@{/logout}" method="post">
+                                    <button type="submit" class="btn btn-light btn-lg float-left" value="Sign Out">Sign Out</button>
+                                </form>
+                            </div>
+                            <div th:if="${#httpServletRequest.remoteUser==null}">
+                                 <form th:action="@{/login}" method="post">
+                                      <h1>You're not logged in </h1>
+                                   <button type="submit" class="btn btn-success btn-lg float-left" value="Login">Login</button>
+                                 </form>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
