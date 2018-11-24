@@ -33,7 +33,7 @@
             <li class="active"><a href="#">Faculties</a></li>
             <li><a href="/departments">Departments</a></li>
             <li><a href="#">Teachers</a></li>
-            <li><a href="#">Users</a></li>
+            <li><a href="/users">Users</a></li>
         </ul>
     </div>
 </nav>
@@ -67,14 +67,14 @@
 
                                 <td class="col-xs-5"/>
                                 <!--Update button-->
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" sec:authorize="isAuthenticated()">
                                     <a th:id = "'update_faculty' + ${fac.facultyId}" th:href = "@{/faculties/findOne(id=${fac.facultyId})}"
                                        class="btn btn-light">
                                         <i class="fa fa-pencil"></i>
                                     </a>
                                 </td>
                                 <!--Delete button-->
-                                <td class="col-xs-1">
+                                <td class="col-xs-1" sec:authorize="isAuthenticated()">
                                     <a th:href="@{/faculties/delete_faculty(facultyId=${fac.facultyId})}" class="btn btn-danger">
                                         <i class="fa fa-trash"></i></a>
                                 </td>
@@ -89,7 +89,7 @@
     <!--Table fragment-->
     <!-- Results block -->
     <!-- Results block -->
-    <div class="row  justify-content-center">
+    <div class="row  justify-content-center"  sec:authorize="isAuthenticated()">
         <div class="form-row text-center">
             <div class="col-sm-6 ">
                 <button class="btn btn-primary" style="width:50%" id="buttonNew" th:href = "@{/faculties/findOne(id='-1')}">

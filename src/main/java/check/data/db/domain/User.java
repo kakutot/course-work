@@ -1,7 +1,6 @@
 package check.data.db.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.tool.schema.TargetType;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -16,27 +15,27 @@ public class User {
     public int userId;
 
     @Column(name = "username",nullable = false)
-    private String username;
+    public String username;
 
     @Column(name = "password",nullable = false)
-    private String password;
+    public String password;
 
     @Column(name = "gender",nullable = false)
-    private String gender;
+    public Boolean gender;
 
     @Column(name = "active",nullable = false)
-    private Boolean active;
+    public Boolean active;
 
     @JsonIgnoreProperties("users")
     @ManyToOne()
     @JoinColumn(name="dept_id", nullable=false)
-    private Department department;
+    public Department department;
 
 
     @ElementCollection(fetch = FetchType.EAGER ,targetClass=Role.class)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
+    @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
-    private Set<Role> userRoles;
+    public Set<Role> userRoles;
 
     public Set<Role> getUserRoles() {
         return userRoles;
@@ -46,7 +45,10 @@ public class User {
         this.userRoles = userRoles;
     }
 
-    public User(){};
+    public User(){}
+    public User(String username){
+        this.username = username;
+    };
     public int getUserId() {
         return userId;
     }
@@ -81,11 +83,11 @@ public class User {
         this.password = password;
     }
 
-    public String getGender() {
+    public Boolean getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
+    public void setGender(Boolean gender) {
         this.gender = gender;
     }
 
@@ -95,5 +97,18 @@ public class User {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", gender=" + gender +
+                ", active=" + active +
+                ", department=" + department +
+                ", userRoles=" + userRoles +
+                '}';
     }
 }

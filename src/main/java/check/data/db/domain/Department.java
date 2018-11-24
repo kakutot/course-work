@@ -1,6 +1,5 @@
 package check.data.db.domain;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sun.xml.internal.ws.developer.Serialization;
 

@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
@@ -31,7 +31,7 @@
             <li><a href="/faculties">Faculties</a></li>
             <li class="active"><a href="#">Departments</a></li>
             <li><a href="#">Teachers</a></li>
-            <li><a href="#">Users</a></li>
+            <li><a href="/users">Users</a></li>
         </ul>
     </div>
 </nav>
@@ -69,7 +69,7 @@
 
                             <!--Update button-->
 
-                           <td class="col-xs-1">
+                           <td  class="col-xs-1"  sec:authorize="isAuthenticated()">
                                <a th:id = "'update_department' + ${dept.deptId}" th:href = "@{/departments/findOne(id=${dept.deptId})}"
                                   class="btn btn-light">
                                    <i class="fa fa-pencil"></i>
@@ -78,7 +78,7 @@
 
                             <!--Delete button-->
 
-                           <td class="col-xs-1">
+                           <td  class="col-xs-1" sec:authorize="isAuthenticated() ">
                                <a th:href="@{/departments/delete_department(departmentId=${dept.deptId})}" class="btn btn-danger">
                                    <i class="fa fa-trash"></i></a>
                            </td>
@@ -93,12 +93,15 @@
    </div>
     <div class="row  justify-content-center">
         <div class="form-row text-center">
-            <div class="col-sm-6 ">
-                <button class="btn btn-primary" style="width:50%" id="buttonNew" th:href = "@{/departments/findOne(id='-1')}">
-                    Add new
-                </button>
-            </div>
-            <div class="col-sm-6 ">
+
+                <div  class="col-sm-6 " sec:authorize="isAuthenticated() ">
+                    <button class="btn btn-primary" style="width:50%" id="buttonNew" th:href = "@{/departments/findOne(id='-1')}">
+                        Add new
+                    </button>
+                </div>
+        </div>
+
+            <div sec:authorize="isAuthenticated()" class="col-sm-6 " >
                 <form  action="#" th:action="@{/departments/}" id="searchForm" class="form-inline">
                     <i class="fa fa-search" aria-hidden="true"></i>
                     <input class="form-control form-control-sm ml-3 w-75" type="text" name="filter" placeholder="Search" aria-label="Search"
@@ -106,6 +109,7 @@
                     <button type="submit" class="btn btn-primary" id="searchButton">Submit</button>
                 </form>
             </div>
+
         </div>
     </div>
 
