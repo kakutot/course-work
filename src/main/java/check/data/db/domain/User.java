@@ -31,6 +31,16 @@ public class User {
     @JoinColumn(name="dept_id", nullable=false)
     public Department department;
 
+    @Column(name = "email_address")
+    public String emailAddress;
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
 
     @ElementCollection(fetch = FetchType.EAGER ,targetClass=Role.class)
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))

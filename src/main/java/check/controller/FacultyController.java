@@ -58,7 +58,6 @@ public class FacultyController {
    public String deleteFaculty(@RequestParam(name="facultyId") String id){
 
      facultyRepo.deleteById(new Integer(id));
-     //System.out.print(id);
       return "redirect:/faculties";
    }
    @PostMapping(value = "/update_faculty")

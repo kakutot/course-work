@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Teachers evaluator </title>
+
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap-multiselect.css" type="text/css">
+    <script type="text/javascript" src="js/bootstrap-multiselect.js"></script>
+
+
+</head>
+<body>
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Teachers Evaluator</a>
+        </div>
+        <ul class="nav navbar-nav">
+            <li><a href="/">Home</a></li>
+            <li><a href="/faculties">Faculties</a></li>
+            <li><a href="/departments">Departments</a></li>
+            <li><a href="#">Teachers</a></li>
+            <li><a href="/users">Users</a></li>
+            <li><a href="/notifications" class="active">Notifications</a></li>
+        </ul>
+    </div>
+</nav>
+<row>
+    <div class="col-md-6 offset-md-3" style="margin-top: 20px ;margin-left: 25%">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="mb-0">Send notification</h3>
+            </div>
+            <div class="panel-body">
+                <form class="form" role="form" autocomplete="off" id="mainForm" th:action="@{/notifications}" method="post" style="display: inline-block">
+                    <div class="form-group" style="text-align: center" >
+                        <h2>Select user's emails</h2>
+                            <select  multiple="multiple" name="selEmails" id="selEmails">
+                                <th:block th:each="user : ${users}">
+                                    <option th:value="${user.getEmailAddress()}">
+                                        <span th:text="${user.getEmailAddress()}"/>
+                                    </option>
+                                </th:block>
+                            </select>
+                    </div>
+
+                    <div class="form-group">
+                        <div>
+                            <br>
+                            <br>
+                        </div>
+                        <button type="submit" class="btn btn-success btn-lg float-right" value="Send message">Send message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</row>
+</body>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#selEmails').multiselect();
+    });
+</script>
+
+</html>

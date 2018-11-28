@@ -1,4 +1,5 @@
 package check.data.db;
 
-public class DbContract {
+public enum DbContract {
+    USER,TEACHER,DEPARTMENT,FACULTY,USER_ROLE,COMMENT
 }
