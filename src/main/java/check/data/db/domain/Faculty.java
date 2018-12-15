@@ -51,4 +51,8 @@ public class Faculty implements java.io.Serializable{
         return "Faculty [id=" + facultyId+ ", facultyName=" + facultyName + "]";
     }
 
+    @PostRemove
+    public void nullifyChilds(){
+        departments.forEach((dept)->dept.setFaculty(null));
+    }
 }

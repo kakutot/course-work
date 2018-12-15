@@ -5,7 +5,6 @@ import check.data.db.domain.User;
 import check.repos.DepartmentRepo;
 import check.repos.UserRepo;
 import check.service.NotificationService;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,9 +12,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.mail.MessagingException;
 import java.util.Collections;
-import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Controller
 @RequestMapping(value="/registration")
@@ -30,22 +30,39 @@ public class RegistrationController {
     @GetMapping()
     public String getRegistration(Model model){
         Iterable departments = departmentRepo.findAll();
+        if(departments.spliterator().getExactSizeIfKnown()==0){
+            departments = null;
+        }
         model.addAttribute("departments",departments);
         return "registration";
     }
     @PostMapping()
     public String addUser(User user, String deptName, Model model){
         User userFromDb = userRepo.findByUsername(user.getUsername());
-        if(userFromDb !=null){
-            model.addAttribute("message","User exists!");
+        List<String> emails = StreamSupport.stream(userRepo.findAll().spliterator(),false)
+                                             .map((usr)->usr.getEmailAddress()).collect(Collectors.toList());
+        if(userFromDb != null){
+            String error = "";
+            StringBuilder stringBuilder = new StringBuilder(error);
+            stringBuilder.append("User exists!");
+            if(emails.contains(user.getEmailAddress())){
+                stringBuilder.append("Email exists!");
+            }
+
+            model.addAttribute("message",stringBuilder.toString());
+
+            Iterable departments = departmentRepo.findAll();
+            if(departments.spliterator().getExactSizeIfKnown()==0){
+                departments = null;
+            }
+            model.addAttribute("departments",departments);
+
+            return "registration";
         }
         else{
             user.setActive(true);
-            user.setUserRoles(Collections.singleton(Role.USER));
-            //System.out.println("Given dept name"+deptName);
-           // System.out.println("Found dept"+departmentRepo.findDistinctByDeptName(deptName));
+            user.setUserRoles(Collections.singleton(Role.ROLE_USER));
             user.setDepartment(departmentRepo.findDistinctByDeptName(deptName));
-            //System.out.println("Add user / user dept id : " + user.getDepartment());
             userRepo.save(user);
         }
 

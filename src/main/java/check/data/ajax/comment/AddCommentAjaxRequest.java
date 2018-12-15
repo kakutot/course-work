@@ -1,8 +1,8 @@
-package check.data.ajax;
+package check.data.ajax.comment;
 
 public class AddCommentAjaxRequest {
-    String msg;
-    String username;
+    private String msg;
+    private String username;
 
     public AddCommentAjaxRequest(String msg, String username) {
         this.msg = msg;

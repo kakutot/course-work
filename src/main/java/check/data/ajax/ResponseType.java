@@ -1,4 +1,4 @@
-package check.data.db.domain;
+package check.data.ajax;
 
 public enum ResponseType {
     OK,ERROR

@@ -1,22 +1,24 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
     <!-- Add icon library -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/js/bootstrap-dialog.min.js"></script>
 
+    <!-- Date picker -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <title>Users</title>
 </head>
@@ -30,12 +32,24 @@
             <li><a href="/">Home</a></li>
             <li><a href="/faculties">Faculties</a></li>
             <li><a href="/departments">Departments</a></li>
-            <li><a href="#">Teachers</a></li>
             <li class="active"><a href="#">Users</a></li>
-            <li><a href="/notifications">Notifications</a></li>
+            <li><a href="/teachers">Teachers</a></li>
         </ul>
     </div>
 </nav>
+
+<div th:if="${message}" class="row">
+    <div style="margin: 0 auto; width: 80%">
+        <div id="errorContainer" class="col-xs-12">
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                <strong>Error!</strong>
+                <span th:text="${message}"/>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container" style="margin-top:16px">
     <!--Table fragment-->
     <div class="panel panel-default"  id="resultTable">
@@ -54,11 +68,11 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:if="${users.empty}">
+                    <tr th:if="${users}==null">
                         <td colspan="2"> No users available </td>
                     </tr>
 
-                    <th:block th:each="user : ${users}">
+                    <th:block th:if="${users}!=null" th:each="user : ${users}">
                         <tr >
                             <td class="col-xs-2">
                                 <span th:text="${user.userId}">
@@ -82,19 +96,29 @@
                                     <span th:text="${role}"/>
                                 </th:block>
                             </td>
-                            <!--Update button-->
 
-                            <td class="col-xs-1"  sec:authorize="isAuthenticated()">
-                                <a th:id = "'update_user' + ${user.userId}" th:href = "@{/users/findOne(id=${user.userId})}"
+                            <!--Personal page button-->
+                            <form>
+                                <td class="col-xs-1" >
+                                    <a th:id = "'show_user' + ${user.userId}" th:href="@{'/users/' + ${user.userId}}"
+                                       class="btn btn-light">
+                                        <i class="fa fa-user"></i>
+                                    </a>
+                                </td>
+                            </form>
+
+                            <!--Update button-->
+                            <td class="col-xs-1"  >
+                                <a th:id = "'update_user' + ${user.userId}"
+                                   th:href = "@{/users/findOne(id=${user.userId})}"
                                    class="btn btn-light">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </td>
 
                             <!--Delete button-->
-
-                            <td class="col-xs-1"  sec:authorize="isAuthenticated()">
-                                <a th:href="@{/users/delete_user(userId=${user.userId})}" class="btn btn-danger">
+                            <td class="col-xs-1" >
+                                <a th:href="@{/users/delete(userId=${user.userId})}" class="btn btn-danger">
                                     <i class="fa fa-trash"></i></a>
                             </td>
 
@@ -106,7 +130,7 @@
             </div>
         </div>
     </div>
-    <div class="row  justify-content-center"  sec:authorize="isAuthenticated()">
+    <div class="row  justify-content-center"  >
         <div class="form-row text-center">
             <div class="col-sm-6 ">
                 <button class="btn btn-primary" style="width:50%" id="buttonNew" th:href = "@{/users/findOne(id='-1')}">
@@ -127,98 +151,346 @@
 </div>
 </div>
 
-<form th:action="@{/users/update_user}" method="post">
+<form th:action="@{/users/update}" method="post">
     <div class="myModal">
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
+
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel"></h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                    <div class="modal-body " style="height: auto">
-                        <div class="form-group">
-                            <input type="hidden"  id="userId" name="userId"/>
-                            <input type="hidden"  id="active" name="active"/>
+                    <input type="hidden" id="userId" name="userId"/>
 
-                            <label for="username" class="col-form-label">Username:</label>
-                            <br>
-                            <input type="text" class="form-control" id="username" name="username" value=""/>
-                            <br>
-                            <label for="gender" class="col-form-label">Gender:</label>
-                            <input type="text" class="form-control" id="gender" name="gender" readonly value=""/>
-                            <br>
-                            <label for="selectGender">Select gender</label>
-                            <br>
-                            <select class="form-control col-sm-5 " id="selectGender">
-                                <option value="0">
-                                    <span >Male</span>
-                                </option>
-                                <option value="1">
-                                    <span >Female</span>
-                                </option>
-                            </select>
-                            <br>
-                            <label for="password" class="col-form-label">Password:</label>
-                            <br>
-                            <input type="text" class="form-control" id="password" name="password" value=""/>
-                            <label for="deptName" class="col-form-label">Dept Name:</label>
-                            <br>
-                            <input type="text" class="form-control" id="deptName" readonly name="deptName"
-                                   th:value="${departments[0].deptName}"/>
-                            <br>
-                            <label for="sel1">Select dept name:</label>
-                            <select class="form-control col-sm-5 " id="sel1">
-                                <th:block th:each="dept : ${departments}">
-                                    <option th:value="${dept.deptName}">
-                                        <span th:text="${dept.deptName}"/>
-                                    </option>
-                                </th:block>
-                            </select>
-                            <br>
-                            <br>
-                            <br>
-                            <label  class="col-form-label">Roles:</label>
-                            <br>
-                                <th:block th:each="role : ${roles}">
-                                    <input th:id = "'checkbox_' + ${role}" th:name="${role}" type="checkbox" >
-                                    <label th:text="${role}" th:id="'label_checkbox_' + ${role}" />
-                                </th:block>
+                    <div class="modal-body " style="height: auto">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="username">Username</label>
+                                                <input type="text" class="form-control" id="username" name="username"
+                                                       placeholder="Username" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="usernameErrorContainer" class="row">
+                                    <div style="margin: 0 auto; width: 80%">
+                                        <div  class="col-xs-12">
+                                            <div class="alert alert-danger alert-dismissible">
+                                                <span id="usernameErrorSpan">Error</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="username">First name</label>
+                                                <input type="text" class="form-control" id="firstName" name="firstName"
+                                                       placeholder="First name" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="username">Last name</label>
+                                                <input type="text" class="form-control" id="lastName" name="lastName"
+                                                       placeholder="Last name" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="patrName">Patronymic name</label>
+                                                <input type="text" class="form-control" id="patrName" name="patrName"
+                                                       placeholder="Patronymic name" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label>Date Of Birth</label>
+                                                <input type="text" id="dateOfBirth" name = "dateOfBirth" class="form-control"
+                                                       placeholder="Choose" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="password">Password</label>
+                                                <input type="password" class="form-control" id="password" name="password"
+                                                       placeholder="Enter password" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for=emailAddress>Email</label>
+                                                <input type="email" class="form-control" id="emailAddress" name="emailAddress"
+                                                       placeholder="Enter email" required="true">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="emailErrorContainer" class="row">
+                                    <div style="margin: 0 auto; width: 80%">
+                                        <div  class="col-xs-12">
+                                            <div class="alert alert-danger alert-dismissible">
+                                                <span id="emailErrorSpan">Error</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="gender">Gender</label>
+                                                <input type="text" class="form-control" id="gender" value = "0"
+                                                       name="gender" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="selectGender">Select gender</label>
+                                                <select class="form-control col-sm-5 " id="selectGender">
+                                                    <option value="0">
+                                                        <span >Male</span>
+                                                    </option>
+                                                    <option value="1">
+                                                        <span >Female</span>
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <div th:unless="${departments}==null">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                <label for="deptName">Department name</label>
+                                                <input  type="text" class="form-control" id="deptName" name="deptName"
+                                                        placeholder="Department name" readonly required=""
+                                                        th:value="${departments[0].deptName}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            <select class="form-control col-sm-5 " id="selectDeptName">
+                                                <th:block th:each="dept : ${departments}">
+                                                    <option th:value="${dept.deptName}">
+                                                        <span th:text="${dept.deptName}"/>
+                                                    </option>
+                                                </th:block>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                          </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="col-form-label">Is admin:</label>
+                                        <input id = "ADMIN" name="ADMIN" type="checkbox" >
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <input type="submit" class="btn btn-primary eBtn" value="Save"></input>
+                        <input id="saveButton" type="submit" class="btn btn-primary eBtn" value="Save"></input>
                     </div>
                 </div>
-            </div>
+             </div>
         </div>
+    </div>
     </div>
 </form>
 
 </body>
 
 <script th:inline="javascript">
-    /*<![CDATA[*/
+    var curUsername = " "
+    var curEmail = " "
 
+    $(function () {
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        $(document).ajaxSend(function(e, xhr, options) {
+            xhr.setRequestHeader(header, token);
+        });
+        $("#emailErrorContainer").hide()
+        $("#usernameErrorContainer").hide()
+    });
+    $('#myModal').on('hidden.bs.modal', function () {
+        curUsername = " "
+        curEmail = " "
+    })
+    $('#emailAddress').on('input',function(e){
+        checkEmail()
+        $("#emailErrorContainer").hide()
+    });
+
+    $('#username').on('input',function(e){
+        checkUsername()
+        $("#usernameErrorContainer").hide()
+    });
+
+    function checkEmail(){
+        var requestUrl ='/users/checkEmail'
+        var request = {}
+        request["email"] = $("#emailAddress").val()
+        request["curEmail"] = curEmail
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: requestUrl,
+            data: JSON.stringify(request),
+            dataType: 'json',
+            cache: false,
+            timeout: 300,
+            success: function (data) {
+                if(data.valid===false){
+                    $("#emailErrorContainer").show()
+                    $("#emailErrorSpan").text("Email already exists!")
+                    $("#saveButton").prop('disabled', true);
+                }
+                else{
+                    $("#emailErrorContainer").hide()
+                    $("#saveButton").prop('disabled', false);
+                }
+            },
+            error: function (e) {
+                alert("Error : can't fetch more data")
+            },
+            done : function(e) {
+                alert("DONE : " + e);
+            }
+        });
+    }
+
+    function checkUsername(){
+        var requestUrl ='/users/checkUsername'
+        var request = {}
+        request["username"] = $("#username").val()
+        request["curUsername"] = curUsername
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: requestUrl,
+            data: JSON.stringify(request),
+            dataType: 'json',
+            cache: false,
+            timeout: 300,
+            success: function (data) {
+                if(data.valid===false){
+                    $("#usernameErrorContainer").show()
+                    $("#usernameErrorSpan").text("Username already exists!")
+                    $("#saveButton").prop('disabled', true);
+                }
+                else{
+                    $("#usernameErrorContainer").hide()
+                    $("#saveButton").prop('disabled', false);
+                }
+            },
+            error: function (e) {
+                alert("Error : can't fetch more data")
+            },
+            done : function(e) {
+                alert("DONE : " + e);
+            }
+        });
+    }
+
+    $("#buttonNew").on('click',function () {
+        event.preventDefault()
+        $('.myModal #exampleModalLabel').text("Insert")
+        $('.myModal #userId').val(-1)
+        $('.myModal #active').val(false)
+        $('.myModal #username').val('')
+        $('.myModal #firstName').val('')
+        $('.myModal #lastName').val('')
+        $('.myModal #patrName').val('')
+        $('.myModal #emailAddress').val('')
+        $('.myModal #gender').val(false)
+        $('.myModal #password').val('')
+        $('.myModal #dateOfBirth').val('')
+        $('#exampleModal').modal();
+    })
+
+
+    $(".myModal #selectDeptName").change(function () {
+        $('.myModal #deptName').val($('#selectDeptName :selected').val())
+    })
+    $(".myModal #selectGender").change(function () {
+        $('.myModal #gender').val($('#selectGender :selected').val())
+    })
+
+    $(function() {
+        $( "#dateOfBirth" ).datepicker({
+            dateFormat : 'mm/dd/yy',
+            changeMonth : true,
+            changeYear : true,
+            yearRange: '-100y:c+nn',
+            maxDate: new Date('2001-12-5'),
+            minDate:new Date('1900-12-5')
+        });
+    });
+
+    /*<![CDATA[*/
     var theList = /*[[${users}]]*/ 'val'
+
     var ids = [];
     for(i = 0;i<theList.length;i++){
         ids[i] =  'update_user' + theList[i].userId;
     }
-
-    //Click callbacks initialization
-    $("#buttonNew").on('click',function () {
-        event.preventDefault()
-        var ref = $(this).attr('href');
-        $.get(ref,function (user,status) {
-            $('.myModal #exampleModalLabel').text("Insert")
-            $('.myModal #userId').val(user.userId)
-        });
-        $('#exampleModal').modal();
-    })
 
     $(function () {
         $.each(ids,function (index,value) {
@@ -227,49 +499,36 @@
                 event.preventDefault()
                 var ref = $(this).attr('href');
                 $.get(ref,function (user,status) {
-
                     var roles = user.userRoles
                     $.each(roles,function (index,value) {
-                        var checkboxStr = '.myModal #checkbox_'+value;
-                        var labelStr = '.myModal #label_checkbox_'+value;
-                           if(value==="USER"){
-                               $(labelStr).hide()
-                               $(checkboxStr).hide()
-                           }
+                        var checkboxAdmin = '.myModal #ADMIN';
+                        if(value==="ROLE_ADMIN"){
+                            $(checkboxAdmin).prop('checked',true)
+                        }
 
-                            $(checkboxStr).prop('checked',true)
                     })
-
                     $('.myModal #exampleModalLabel').text("Update")
-                    $('.myModal #username').val(user.username)
-                    $('.myModal #gender').val(user.gender)
                     $('.myModal #userId').val(user.userId)
-                    $('.myModal #password').val(user.password)
                     $('.myModal #active').val(user.active)
+                    $('.myModal #username').val(user.username)
+                    $('.myModal #firstName').val(user.firstName)
+                    $('.myModal #lastName').val(user.lastName)
+                    $('.myModal #patrName').val(user.patrName)
+                    $('.myModal #emailAddress').val(user.emailAddress)
+                    $('.myModal #gender').val(user.gender)
+                    $('.myModal #password').val(user.password)
+                    $('.myModal #dateOfBirth').val(user.dateOfBirth)
                     $('.myModal #deptName').val(user.department.deptName)
+
+                    curUsername = user.username
+                    curEmail = user.emailAddress
                 });
                 $('#exampleModal').modal();
             }))
         })
     })
 
-    $(".myModal #sel1").change(function () {
-        $('.myModal #deptName').val($('#sel1 :selected').val())
-    })
-    $(".myModal #selectGender").change(function () {
-        $('.myModal #gender').val($('#selectGender :selected').val())
-    })
     /*]]>*/
-
-    function containsObject(obj, list) {
-        var i;
-        for (i = 0; i < list.length; i++) {
-            if (list[i] === obj) {
-                return true;
-            }
-        }
-        return false;
-    }
 </script>
 
 </html>

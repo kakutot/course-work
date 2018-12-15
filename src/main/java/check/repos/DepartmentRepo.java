@@ -11,4 +11,5 @@ import java.util.List;
 public interface DepartmentRepo extends JpaRepository<Department,Integer> {
     List<Department> findByDeptNameContaining(String deptName);
     Department findDistinctByDeptName(String deptName);
+    List<Department> findAllByFaculty(Faculty faculty);
 }

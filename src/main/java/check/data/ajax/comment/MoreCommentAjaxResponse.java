@@ -1,4 +1,4 @@
-package check.data.ajax;
+package check.data.ajax.comment;
 
 import check.data.db.domain.Comment;
 

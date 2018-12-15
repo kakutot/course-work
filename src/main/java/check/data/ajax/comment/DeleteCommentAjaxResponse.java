@@ -1,7 +1,9 @@
-package check.data.ajax;
+package check.data.ajax.comment;
+
+import check.data.ajax.ResponseType;
 
 public class DeleteCommentAjaxResponse {
-    ResponseType responseType;
+    private ResponseType responseType;
 
     public DeleteCommentAjaxResponse() {
     }

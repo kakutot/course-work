@@ -4,38 +4,26 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.io.Serializable;
-import java.util.Objects;
 
 @Entity
 @Table(name = "Teacher_User_Ratings")
-public class Teacher_User_Ratings{
+public class TeacherUserRatings {
     @EmbeddedId
-    public CompositeId compositeId;
+    public RatingsCompositeId compositeId;
 
-    @Column(name = "isNeg")
+    @Column(name = "is_neg")
     public Boolean isNeg;
 
-    @Column(name = "isPos")
+    @Column(name = "is_pos")
     public Boolean isPos;
 
-    public Teacher_User_Ratings() {
-    }
-
-    public Teacher_User_Ratings(CompositeId compositeId, Boolean isNeg, Boolean isPos) {
+    public TeacherUserRatings(RatingsCompositeId compositeId, Boolean isNeg, Boolean isPos) {
         this.compositeId = compositeId;
         this.isNeg = isNeg;
         this.isPos = isPos;
     }
 
-    public CompositeId getCompositeId() {
-        return compositeId;
-    }
-
-    public void setCompositeId(CompositeId compositeId) {
-        this.compositeId = compositeId;
+    public TeacherUserRatings() {
     }
 
     public Boolean getNeg() {
@@ -54,46 +42,11 @@ public class Teacher_User_Ratings{
         isPos = pos;
     }
 
-    public static class CompositeId implements Serializable {
-        @NotNull
-        @Size(max = 20)
-        private String teacherId;
+    public RatingsCompositeId getCompositeId() {
+        return compositeId;
+    }
 
-        @NotNull
-        @Size(max = 20)
-        private String userId;
-
-        public CompositeId() {
-        }
-
-        public String getTeacherId() {
-            return teacherId;
-        }
-
-        public void setTeacherId(String teacherId) {
-            this.teacherId = teacherId;
-        }
-
-        public String getUserId() {
-            return userId;
-        }
-
-        public void setUserId(String userId) {
-            this.userId = userId;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            CompositeId that = (CompositeId) o;
-            return Objects.equals(teacherId, that.teacherId) &&
-                    Objects.equals(userId, that.userId);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(teacherId, userId);
-        }
+    public void setCompositeId(RatingsCompositeId compositeId) {
+        this.compositeId = compositeId;
     }
 }

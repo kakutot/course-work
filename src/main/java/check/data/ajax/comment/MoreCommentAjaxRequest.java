@@ -1,4 +1,4 @@
-package check.data.ajax;
+package check.data.ajax.comment;
 
 public class MoreCommentAjaxRequest {
     private Integer pageNumber;

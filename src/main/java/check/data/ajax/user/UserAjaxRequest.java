@@ -1,27 +1,30 @@
 package check.data.ajax.user;
 
-import check.data.ajax.ResponseType;
 import check.data.db.domain.User;
 
-public class UpdateUserAjaxRequest {
+public class UserAjaxRequest {
     User userRequest;
-    ResponseType responseType;
+    String deptName;
+    boolean isAdmin;
 
-    public UpdateUserAjaxRequest(){
+    public UserAjaxRequest(){
 
     }
 
-    public UpdateUserAjaxRequest(User userRequest, ResponseType responseType) {
-        this.userRequest = userRequest;
-        this.responseType = responseType;
+    public boolean isAdmin() {
+        return isAdmin;
     }
 
-    public ResponseType getResponseType() {
-        return responseType;
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
     }
 
-    public void setResponseType(ResponseType responseType) {
-        this.responseType = responseType;
+    public String getDeptName() {
+        return deptName;
+    }
+
+    public void setDeptName(String deptName) {
+        this.deptName = deptName;
     }
 
     public User getUserRequest() {

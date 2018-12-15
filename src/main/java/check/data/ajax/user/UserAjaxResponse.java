@@ -1,12 +1,22 @@
 package check.data.ajax.user;
 
+import check.data.ajax.ResponseType;
 import check.data.db.domain.User;
 
-public class UpdateUserAjaxResponse {
+public class UserAjaxResponse {
     User userResponse;
+    ResponseType responseType;
 
-    public UpdateUserAjaxResponse(){
+    public UserAjaxResponse(){
+        responseType = ResponseType.OK;
+    }
 
+    public ResponseType getResponseType() {
+        return responseType;
+    }
+
+    public void setResponseType(ResponseType responseType) {
+        this.responseType = responseType;
     }
 
     public User getUserResponse() {

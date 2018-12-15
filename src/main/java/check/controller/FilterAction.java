@@ -1,4 +1,7 @@
 package check.controller;
 
-public class FilterAction {
+import java.util.List;
+
+public interface FilterAction<T> {
+    List<T> apply(String filter);
 }

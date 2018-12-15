@@ -34,18 +34,33 @@ public class User {
     @Column(name = "email_address")
     public String emailAddress;
 
-    public String getEmailAddress() {
-        return emailAddress;
-    }
+    @Column(name = "dob",nullable = false)
+    public String dateOfBirth;
 
-    public void setEmailAddress(String emailAddress) {
-        this.emailAddress = emailAddress;
-    }
+    @Column(name = "first_name")
+    public String firstName;
+
+    @Column(name = "last_name")
+    public String lastName;
+
+    @Column(name = "patr_name")
+    public String patrName;
+
+    @JsonIgnoreProperties("user")
+    @OneToMany(fetch=FetchType.EAGER, cascade=CascadeType.REFRESH,orphanRemoval = true,mappedBy= "user")
+    private Set<Comment> comments = new HashSet<>(0);
 
     @ElementCollection(fetch = FetchType.EAGER ,targetClass=Role.class)
     @CollectionTable(name = "user_role",joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     public Set<Role> userRoles;
+
+    public User(){
+    }
+
+    public User(String username){
+        this.username = username;
+    };
 
     public Set<Role> getUserRoles() {
         return userRoles;
@@ -55,10 +70,6 @@ public class User {
         this.userRoles = userRoles;
     }
 
-    public User(){}
-    public User(String username){
-        this.username = username;
-    };
     public int getUserId() {
         return userId;
     }
@@ -66,8 +77,6 @@ public class User {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
-
 
     public String getUsername() {
         return username;
@@ -109,6 +118,54 @@ public class User {
         this.department = department;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getPatrName() {
+        return patrName;
+    }
+
+    public void setPatrName(String patrName) {
+        this.patrName = patrName;
+    }
+
+    public String getEmailAddress() {
+        return emailAddress;
+    }
+
+    public void setEmailAddress(String emailAddress) {
+        this.emailAddress = emailAddress;
+    }
+
+    public String getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public Set<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(Set<Comment> comments) {
+        this.comments = comments;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -117,7 +174,10 @@ public class User {
                 ", password='" + password + '\'' +
                 ", gender=" + gender +
                 ", active=" + active +
-                ", department=" + department +
+                ", emailAddress='" + emailAddress + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", patrName='" + patrName + '\'' +
                 ", userRoles=" + userRoles +
                 '}';
     }

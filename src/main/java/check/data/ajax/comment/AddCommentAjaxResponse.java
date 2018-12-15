@@ -1,5 +1,6 @@
-package check.data.ajax;
+package check.data.ajax.comment;
 
+import check.data.ajax.ResponseType;
 import check.data.db.domain.Comment;
 
 import java.util.List;

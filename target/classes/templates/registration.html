@@ -9,81 +9,183 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/js/bootstrap-dialog.min.js"></script>
+
+    <!-- Date picker -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 </head>
 <body>
 
-<h5 th:if="${message}">
-    <td colspan="2">message</td>
-</h5>
-<row>
-    <div class="col-md-6 offset-md-3" style="margin-top: 20px ;margin-left: 25%">
-
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="mb-0">Register</h3>
-            </div>
-            <div class="panel-body">
-                <form class="form" role="form" autocomplete="off" id="mainForm" th:action="@{/registration}" method="post">
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username"
-                               placeholder="Username" required="">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password"
-                               placeholder="Enter password" required="">
-                    </div>
-                    <div class="form-group">
-                        <label for=emailAddress>Email</label>
-                        <input type="email" class="form-control" id="emailAddress" name="emailAddress"
-                               placeholder="Enter email" required="">
-                    </div>
-                    <div class="form-group">
-                        <label for="gender">Gender</label>
-                        <input type="text" class="form-control" id="gender" value = "0"
-                               name="gender" readonly placeholder="Gender">
-                        <br>
-                        <label for="selectGender">Select gender</label>
-                        <select class="form-control col-sm-5 " id="selectGender">
-                            <option value="0">
-                                <span >Male</span>
-                            </option>
-                            <option value="1">
-                                <span >Female</span>
-                            </option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <div>
-                            <br>
-                            <br>
-                        </div>
-                        <label for="deptName">Department name</label>
-                        <input type="text" class="form-control" id="deptName" name="deptName" placeholder="Department name"
-                               readonly required="" th:value="${departments[0].deptName}">
-                        <div>
-                            <br>
-                        </div>
-                        <select class="form-control col-sm-5 " id="selectDeptName">
-                            <th:block th:each="dept : ${departments}">
-                                <option th:value="${dept.deptName}">
-                                    <span th:text="${dept.deptName}"/>
-                                </option>
-                            </th:block>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <div>
-                            <br>
-                            <br>
-                        </div>
-                        <button type="submit" class="btn btn-success btn-lg float-right" value="Register">Register</button>
-                    </div>
-                </form>
+<div th:if="${message}" class="row">
+    <div style="margin: 0 auto; width: 80%">
+        <div id="errorContainer" class="col-xs-12">
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                    <strong>Error!</strong>
+                    <span th:text="${message}"/>
             </div>
         </div>
+    </div>
+</div>
+<row>
+    <div class="col-md-6 offset-md-3" style="margin-top: 20px ;margin-left: 25%">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="mb-0">Register</h3>
+                </div>
+                <div class="panel-body">
+                    <form class="form" role="form" autocomplete="off" id="mainForm" th:action="@{/registration}" method="post">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username"
+                                               placeholder="Username" required="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="username">First name</label>
+                                        <input type="text" class="form-control" id="firstName" name="firstName"
+                                               placeholder="First name" required="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="username">Last name</label>
+                                        <input type="text" class="form-control" id="lastName" name="lastName"
+                                               placeholder="Last name" required="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="patrName">Patronymic name</label>
+                                        <input type="text" class="form-control" id="patrName" name="patrName"
+                                               placeholder="Patronymic name" required="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Date Of Birth</label>
+                                            <input type="text" id="dateOfBirth" name = "dateOfBirth" class="form-control"
+                                                   placeholder="Choose" required="true">
+                                        </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="password">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password"
+                                               placeholder="Enter password" required="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for=emailAddress>Email</label>
+                                        <input type="email" class="form-control" id="emailAddress" name="emailAddress"
+                                               placeholder="Enter email" required="true">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="gender">Gender</label>
+                                        <input type="text" class="form-control" id="gender" value = "0"
+                                               name="gender" readonly placeholder="Gender">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="selectGender">Select gender</label>
+                                        <select class="form-control col-sm-5 " id="selectGender">
+                                            <option value="0">
+                                                <span >Male</span>
+                                            </option>
+                                            <option value="1">
+                                                <span >Female</span>
+                                            </option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="deptName">Department name</label>
+                                            <div th:unless="${departments}==null">
+                                                <input type="text" class="form-control" id="deptName" name="deptName"
+                                                       placeholder="Department name" readonly required=""
+                                                       th:value="${departments[0].deptName}">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <select class="form-control col-sm-5 " id="selectDeptName">
+                                        <th:block th:each="dept : ${departments}">
+                                            <option th:value="${dept.deptName}">
+                                                <span th:text="${dept.deptName}"/>
+                                            </option>
+                                        </th:block>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <br>
+                            <br>
+                            <button type="submit" class="btn btn-success btn-lg float-lg-left " value="Register">Register</button>
+                        </div>
+                         </form>
+                     </div>
+                 </div>
+             </div>
     </div>
 </row>
 
@@ -98,5 +200,17 @@
     $("#mainForm #selectDeptName").change(function () {
         $('#mainForm #deptName').val($('#selectDeptName :selected').val())
     })
+
+    $(function() {
+        $( "#dateOfBirth" ).datepicker({
+            dateFormat : 'mm/dd/yy',
+            changeMonth : true,
+            changeYear : true,
+            yearRange: '-100y:c+nn',
+            maxDate: new Date('2001-12-5'),
+            minDate:new Date('1900-12-5')
+        });
+    });
+
 </script>
 </html>
